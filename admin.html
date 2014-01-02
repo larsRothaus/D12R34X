@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!--
+
+    strReplase this "192.168.0.158" with new ip
+    -->
+
+    <title>test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://192.168.0.158:3700/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <style>
+
+        .btn
+        {
+            height: 44px;
+        }
+        #field
+        {
+            overflow: hidden;
+        }
+
+    </style>
+
+</head>
+<body onload="init()">
+
+
+<script>
+    /*
+     * DR HLS: http://lm.gss.dr.dk/V/V01M.stream/Playlist.m3u8
+     *
+     *
+     *
+     * */
+
+    var messages = [];
+    var sender;
+    var field;
+    var content;
+    var socket;
+
+     //jQuery(function($){
+function init()
+{
+        alert("init");
+         sender = document.getElementById("sender_btn");
+         field = document.getElementById("field");
+         content = document.getElementById("content");
+         socket = io.connect("http://192.168.0.158:3700");
+
+        content.innerHTML = "HELLO";
+
+        socket.on('message', function (data) {
+
+
+            if(data.message) {
+                messages.push(data.message);
+                var html = '';
+                for(var i=0; i<messages.length; i++) {
+                    html += messages[i] + '<br />';
+                }
+                //content.innerHTML = html;
+            } else {
+
+            }
+        });
+
+        sender.onclick = function()
+        {
+            if(field.value != "")
+            {
+                socket.emit('send',{evnetType:"test",message:field.value});
+                field.value = "";
+
+            }else{
+                field.value = "You need to write something";
+
+            }
+
+        }
+
+    }
+//    });
+
+    function showBox()
+    {
+        if(socket)
+        {
+            socket.emit('send',{type:"boxControl",message:"show"});
+        }
+    }
+    function hideBox()
+    {
+        if(socket)
+        {
+            socket.emit('send',{type:"boxControl",message:"hide"});
+        }
+    }
+    function play()
+    {
+        if(socket)
+        {
+            socket.emit('send',{type:"playerControl",message:"play"});
+        }
+    }
+    function pause()
+    {
+        if(socket)
+        {
+            socket.emit('send',{type:"playerControl",message:"pause"});
+        }
+    }
+    function updateSource(source)
+    {
+        if(socket)
+        {
+            socket.emit('send',{type:"playerControl",message:"updateSource",value:source});
+        }
+    }
+    function updateVolume(vol)
+    {
+        if(socket)
+        {
+            socket.emit('send',{type:"playerControl",message:"updateVolume",value:vol});
+        }
+    }
+
+
+    /*function init() {
+
+     var messages = [];
+
+     var socket = io.connect('http://localhost:3700');
+     alert("here");
+     var field = document.getElementById("field");
+     var content = document.getElementById("content");
+
+     content.innerHTML = "YOU SOCK!ET..";
+
+     socket.on('message', function (data) {
+
+     if(data.message) {
+     messages.push(data.message);
+     var html = '';
+     for(var i=0; i<messages.length; i++) {
+     html += messages[i] + '<br />';
+     }
+     content.innerHTML = html;
+     } else {
+     console.log("There is a problem:", data);
+     }
+     });
+     }
+
+     function sendMessage()
+     {
+     var text = field.value;
+     alert("sending : " + text);
+     socket.emit('send', { message: text });
+     };*/
+
+</script>
+
+<!--<div id="content" style="background-color: chartreuse; width: 300px; height: 200px;">-->
+
+</div>
+
+<input type="button" class="btn" value="Show Box" onclick="showBox();">
+<br>
+<input type="button" class="btn" value="Hide Box" onclick="hideBox();">
+<br>
+<input type="button" class="btn" value="play" onclick="play();">
+<br>
+<input type="button" class="btn" value="pause" onclick="pause();">
+<br>
+<input type="button" class="btn" value="source 1" onclick="updateSource('http://192.168.0.158:8888/video/mission.mp4');">
+<br>
+<input type="button" class="btn" value="source 2" onclick="updateSource('http://192.168.0.158:8888/video/mission.mp4');">
+<br>
+<input type="text" value="0" id="volumeText">
+<input type="button" class="btn" value="update Volume" onclick="updateVolume(document.getElementById('volumeText').value)" >
+
+
+</body>
+</html>

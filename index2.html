@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/easing/EasePack.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"></script>
+
+    <meta charset="UTF-8" />
+    <title>HTML5 Full-Screen Demonstration</title>
+    <style>
+        *
+        {
+            padding: 0;
+            margin: 0;
+        }
+
+        html, body
+        {
+            height: 100%;
+            font-family: "Segoe UI", arial, helvetica, freesans, sans-serif;
+            color: #333;
+            background-color: #fff;
+
+
+        }
+
+        body
+        {
+            margin: 0px;
+        }
+
+        p
+        {
+            margin: 0 0 0 0;
+        }
+
+        section
+        {
+            position: absolute;
+            display: block;
+            width: 100%;
+            padding: 0px;
+            margin: 0;
+            cursor: pointer;
+
+        }
+
+        section img
+        {
+
+            width: 100%;
+        }
+
+        section p
+        {
+            position: absolute;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+        }
+
+        section:-webkit-full-screen
+        {
+            float: none;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            border: 0 none;
+        }
+
+        section:-moz-full-screen
+        {
+            float: none;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            border: 0 none;
+        }
+
+        section:-ms-full-screen
+        {
+            float: none;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            border: 0 none;
+        }
+
+        section:-o-full-screen
+        {
+            float: none;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            border: 0 none;
+        }
+
+        section:full-screen
+        {
+            float: none;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            border: 0 none;
+        }
+        flashContent
+        {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            padding: 0;
+            margin: 0;
+        }
+        fullscreen_btn
+        {
+            position: absolute;
+            z-index: 100;
+        }
+        .facebook
+        {
+            position: absolute;
+            width: 200px;
+            height: 600px;
+
+
+        }
+        .xxx
+        {
+
+            background: url(http://www.desktopas.com/files/2013/05/Graffiti-Wallpaper-1920x1200.jpg) no-repeat 0px 0px;
+            width: 100%;
+            height: 100%;
+        }
+        .overlay
+        {
+            position: absolute;
+        }
+        .box1
+        {
+            position: absolute;
+            background: url("http://www1.pictures.zimbio.com/gi/Women+Snowboard+Half+Pipe+FIS+World+Cup+j8g6lwNwmgFl.jpg") no-repeat 0px 0px;
+            width: 300px;
+            height: 300px;
+        }
+        .box1.test
+        {
+
+        }
+
+
+    </style>
+</head>
+<body onload="init();">
+<section id="fullscreen">
+    <div class="overlay">
+        <iframe src="https://m.facebook.com/" id="facebook_obj" class=".facebook"></iframe>
+        <input id="fullscreen_btn" value="TEST" type="button" onclick="fullsceenHandler();">
+        <input id="1234" value="1234" type="button" onclick="animationHandler();">
+
+        <div id="fuu" class="box1">
+
+        </div>
+
+
+        <!--http://www1.pictures.zimbio.com/gi/Women+Snowboard+Half+Pipe+FIS+World+Cup+j8g6lwNwmgFl.jpg-->
+    </div>
+    <div id="flash" class="xxx"">
+    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="100%" height="100%">
+        <param name="movie" value="DDROverlayPlayer.swf" />
+        <param name="quality" value="high" />
+        <param name="bgcolor" value="#ffffff" />
+        <param name="play" value="true" />
+        <param name="loop" value="true" />
+        <param name="wmode" value="transparent" />
+        <param name="scale" value="showall" />
+        <param name="menu" value="true" />
+        <param name="devicefont" value="false" />
+        <param name="salign" value="" />
+        <param name="allowScriptAccess" value="sameDomain" />
+        <!--[if !IE]>-->
+        <object type="application/x-shockwave-flash" data="DROverlayPlayer.swf" width="100%" height="100%">
+            <param name="movie" value="DDROverlayPlayer.swf" />
+            <param name="quality" value="high" />
+            <param name="bgcolor" value="#ffffff" />
+            <param name="play" value="true" />
+            <param name="loop" value="true" />
+            <param name="wmode" value="transparent" />
+            <param name="scale" value="showall" />
+            <param name="menu" value="true" />
+            <param name="devicefont" value="false" />
+            <param name="salign" value="" />
+            <param name="allowScriptAccess" value="sameDomain" />
+            <!--<![endif]-->
+            <a href="http://www.adobe.com/go/getflash">
+                <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+            </a>
+            <!--[if !IE]>-->
+        </object>
+        <!--<![endif]-->
+    </object>
+    </div>
+
+</section>
+<script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+<script>
+
+    var e = document.getElementById("fullscreen");
+
+    //e.onclick =
+    function init()
+    {
+        $("box_1") = $( window ).width();
+    }
+
+
+
+
+    /*function toggleSize()
+     {
+     $('.cb_videoContainer').toggleClass('wide');
+     $('.cb_clipbrowserContainer').toggleClass('wide');
+     $('.toogleSize').toggleClass('active');
+     }*/
+
+
+    function animationHandler()
+    {
+        /* alert("works");
+
+         if (window.jQuery) {
+         alert("jQuery is loaded");
+
+         } else {
+         alert("jQuery is not loaded");
+         }*/
+        $('.box1').toggleClass('test');
+
+    }
+    function fullsceenHandler() {
+        alert("test");
+        if (RunPrefixMethod(document, "FullScreen") || RunPrefixMethod(document, "IsFullScreen")) {
+            RunPrefixMethod(document, "CancelFullScreen");
+        }
+        else {
+            RunPrefixMethod(e, "RequestFullScreen");
+        }
+
+    }
+
+    var pfx = ["webkit", "moz", "ms", "o", ""];
+    function RunPrefixMethod(obj, method) {
+
+        var p = 0, m, t;
+        while (p < pfx.length && !obj[m]) {
+            m = method;
+            if (pfx[p] == "") {
+                m = m.substr(0,1).toLowerCase() + m.substr(1);
+            }
+            m = pfx[p] + m;
+            t = typeof obj[m];
+            if (t != "undefined") {
+                pfx = [pfx[p]];
+                return (t == "function" ? obj[m]() : obj[m]);
+            }
+            p++;
+        }
+
+    }
+
+</script>
+
+</body>
+</html>

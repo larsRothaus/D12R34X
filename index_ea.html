@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="js/swfobject.js"></script>
+    <script type="text/javascript" src="js/io.js"></script>
+    <script type="text/javascript" src="js/Events.js"></script>
+    <script type="text/javascript" src="js/EventDispatcher.js"></script>
+    <script type="text/javascript" src="js/EventMediator.js"></script>
+    <script type="text/javascript" src="js/PlayerProxy.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://at.presenterevents.service.qbrick.com/Scripts/jquery.signalR-2.0.0.js"></script>
+
+    <script src="http://at.presenterevents.service.qbrick.com/signalr/hubs"></script>
+
+    <script src="http://at.presenterevents.service.qbrick.com/Scripts/PresenterEvents.SignalrWrapper.js"></script>
+    <!--<script src="http://dev.presenterevents.service.qbrick.com/Scripts/PresenterEvents.SignalRWrapper.js"></script>-->
+    <script src="http://at.presenterevents.service.qbrick.com/Scripts/PresenterEvents.ClientHelper.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/easing/EasePack.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"></script>
+
+</head>
+
+<style>
+    {
+        padding: 0;
+        margin: 0;
+    }
+
+    #iframe {
+        z-index:1;
+    }
+
+    html, body
+    {
+        height: 100%;
+        font-family: "Segoe UI", arial, helvetica, freesans, sans-serif;
+        color: #333;
+        background-color: #000;
+
+
+    }
+
+    body
+    {
+        margin: 0px;
+    }
+
+    p
+    {
+        margin: 0 0 0 0;
+    }
+
+    section
+    {
+        position: fixed;
+        display: block;
+        width: 100%;
+        padding: 0px;
+        margin: 0;
+        cursor: pointer;
+
+    }
+
+        /* html */
+    :-webkit-full-screen {
+        background: pink;
+    }
+    :-moz-full-screen {
+        background: pink;
+    }
+
+        /* deeper elements */
+    :-webkit-full-screen video {
+        width: 100%;
+        height: 100%;
+    }
+
+
+    .html5Video
+    {
+
+        z-index: -1;
+
+        float: none;
+        width: 100%;
+        height: 100%;
+        top : 0;
+        padding: 0;
+        margin: 0;
+        border: 0 none;
+
+
+    }
+
+    .facebook
+    {
+        position: absolute;
+        width: 200px;
+        height: 600px;
+
+
+    }
+    .__box
+    {
+        z-index: 999;
+        float: none;
+        width: 100%;
+        height: 100%;
+        top : 0;
+        padding: 0;
+        margin: 0;
+        border: 0 none;
+    }
+    .overlay
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+    .box1
+    {
+        box-shadow: 3px 3px 10px #000000;
+        border-radius: 15px;
+        opacity:0;
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        margin:auto;
+        background-color: teal;
+        /*background: url("http://www1.pictures.zimbio.com/gi/Women+Snowboard+Half+Pipe+FIS+World+Cup+j8g6lwNwmgFl.jpg") no-repeat 0px 0px;*/
+        width: 300px;
+        height: 300px;
+    }
+    .box1.test
+    {
+
+    }
+    #video_background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: -1000;
+    }
+
+</style>
+<body onload="init()">
+
+
+<script>
+
+    /*
+     * DR HLS: http://lm.gss.dr.dk/V/V01M.stream/Playlist.m3u8
+     * http://192.168.0.158:8888/video/test.mp4
+     *
+     *
+     * */
+    //jQuery(function($){
+
+    var presentationUniqueId = 1387533966848;
+    var url = "http://at.presenterevents.service.qbrick.com";
+    var type = "POST";
+    var dataType = "json";
+    var contentType = "application/json;charset=utf-8";
+
+    function init()
+    {
+
+        /** PROPERTYES **/
+        var content             = document.getElementById("content");
+        var flashContainer      = document.getElementById("flash");
+
+
+        var playerProxy         = new PlayerProxy();
+              playerProxy.initialize();
+
+        var eventMediator       = new EventMediator();
+              eventMediator.eventDispatcher.addListener(Events.BOX_EVENT,onBoxEvent);
+              eventMediator.eventDispatcher.addListener(Events.PLAYER_EVENT,onPlayerEvent);
+              eventMediator.setDelay(0);
+              eventMediator.initialize();
+
+        setTimeout(function(){
+
+            TweenLite.to(content, 1, {opacity:1, ease:Expo.easeOut});
+
+        },8);
+
+        function addFlashPlayer()
+        {
+            console.log("add FLASH");
+
+            var flashEmbed="";
+            flashEmbed += "<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\"width=\"100%\" height=\"100%\">";
+            flashEmbed += "            <param name=\"movie\" value=\"DRXFactor.swf\" \/>";
+            flashEmbed += "            <param name=\"quality\" value=\"high\" \/>";
+            flashEmbed += "            <param name=\"bgcolor\" value=\"#ffffff\" \/>";
+            flashEmbed += "            <param name=\"play\" value=\"true\" \/>";
+            flashEmbed += "            <param name=\"loop\" value=\"true\" \/>";
+            flashEmbed += "            <param name=\"wmode\" value=\"transparent\" \/>";
+            flashEmbed += "            <param name=\"scale\" value=\"showall\" \/>";
+            flashEmbed += "            <param name=\"menu\" value=\"true\" \/>";
+            flashEmbed += "            <param name=\"devicefont\" value=\"false\" \/>";
+            flashEmbed += "            <param name=\"salign\" value=\"\" \/>";
+            flashEmbed += "            <param name=\"allowScriptAccess\" value=\"sameDomain\" \/>";
+            flashEmbed += "";
+            flashEmbed += "            <object type=\"application\/x-shockwave-flash\" id=\"FLASHPlayer\" data=\"DRXFactor.swf\" width=\"100%\" height=\"100%\">";
+            flashEmbed += "                <param name=\"movie\" value=\"DRXFactor.swf\" \/>";
+            flashEmbed += "                <param name=\"quality\" value=\"high\" \/>";
+            flashEmbed += "                <param name=\"bgcolor\" value=\"#ffffff\" \/>";
+            flashEmbed += "                <param name=\"play\" value=\"true\" \/>";
+            flashEmbed += "                <param name=\"loop\" value=\"true\" \/>";
+            flashEmbed += "                <param name=\"wmode\" value=\"transparent\" \/>";
+            flashEmbed += "                <param name=\"scale\" value=\"showall\" \/>";
+            flashEmbed += "                <param name=\"menu\" value=\"true\" \/>";
+            flashEmbed += "                <param name=\"devicefont\" value=\"false\" \/>";
+            flashEmbed += "                <param name=\"salign\" value=\"\" \/>";
+            flashEmbed += "                <param name=\"allowScriptAccess\" value=\"sameDomain\" \/>";
+            flashEmbed += "";
+            flashEmbed += "            <\/object>";
+            flashEmbed += "";
+            flashEmbed += "        <\/object>";
+
+            flashContainer.innerHTML = flashEmbed
+
+            playerProxy.flashPlayer = document.getElementById("FLASHPlayer");
+
+
+        }
+        function addHTMLPlayer()
+        {
+            var HTMLEmbed="";
+            HTMLEmbed += " <video class=\"html5Video\" id=\"HTMLPlayer\" >";
+            //HTMLEmbed += "            <source src=\"http:\/\/lm.gss.dr.dk\/V\/V01M.stream\/Playlist.m3u8\" type=\"video\/mp4\">";
+            HTMLEmbed += " <\/video>";
+
+            flashContainer.innerHTML = HTMLEmbed;
+
+            playerProxy.html5Player = document.getElementById("HTMLPlayer");
+
+        }
+
+
+        //---------------------------------------------------------------
+        //GERE
+        //---------------------------------------------------------------
+
+        function playerInit()
+        {
+
+        }
+
+        function onPlayerEvent(data)
+        {
+            if(playerProxy)
+            {
+                if(data.message == "play")
+                {
+                    playerProxy.play();
+
+                    console.log("______play");
+                }else if(data.message == "pause")
+                {
+                    playerProxy.pause()
+                    console.log("______pause");
+                }else if(data.message == "updateSource")
+                {
+                    playerProxy.setSource(data.value);
+                    console.log("updateSource " + data.value);
+                }else if(data.message == "updateVolume")
+                {
+                    console.log("_______updateVolume " + data.value);
+                    playerProxy.volume(data.value);
+
+                }
+            }
+
+        }
+
+        function onBoxEvent(data)
+        {
+            console.log(document.getElementById("externalInterface"));
+            if(data.EventData == "show")
+            {
+                TweenLite.to(content, 1, {marginLeft:"0", ease:Expo.easeOut});
+
+            }else if(data.EventData == "hide")
+            {
+                TweenLite.to(content, 1, {marginLeft:"-300px", ease:Expo.easeOut});
+            }
+        }
+
+
+
+
+        var hh = window.location;
+        hh = ''+hh;
+        var a = hh.split('h=');
+
+        
+        if(a[1] == "true")
+        {
+            addHTMLPlayer();
+            playerInit();
+        }else{
+            addFlashPlayer();
+            setTimeout(function(){playerInit()},1000);
+
+        }
+
+    }
+    //});
+
+
+    function doShit()
+    {
+        var qwerqwer         = document.getElementById("aPlayer");
+        qwerqwer.helloTest("HOO");
+    }
+
+    function fullscreen(){
+
+        launchFullScreen(document.documentElement); // the whole page
+
+    }
+    function launchFullScreen(element) {
+        if(element.requestFullScreen) {
+            element.requestFullScreen();
+        } else if(element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if(element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        }
+    }
+
+</script>
+
+
+
+
+<section id="fullscreen">
+    <div class="overlay">
+        <br>
+        <br>
+        <input id="1234" value="1234" type="button" onclick="fullscreen();">
+        <div id="content" class="box1">
+            <iframe id="scribbleboxboston" src='http://embed.scribblelive.com/Embed/v5.aspx?Id=253005&ThemeId=817' id="iframe" width='300' height='300' frameborder='0'></iframe>
+        </div>
+    </div>
+    <div id="flash" class="__box"></div>
+</section>
+<br>
+<!--<iframe id="scribbleboxboston" src='http://embed.scribblelive.com/Embed/v5.aspx?Id=253005&ThemeId=817' width='390' height='1900' frameborder='0'></iframe>-->
+</body>
+</html>

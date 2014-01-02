@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<script src="js/PresenterEvents.SimplyClient.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://at.presenterevents.service.qbrick.com/Scripts/jquery.signalR-2.0.0.js"></script>
+<script src="http://at.presenterevents.service.qbrick.com/signalr/hubs"></script>
+<script src="http://at.presenterevents.service.qbrick.com/Scripts/PresenterEvents.SignalrWrapper.js"></script>
+<script src="http://at.presenterevents.service.qbrick.com/Scripts/PresenterEvents.ClientHelper.js"></script>
+
+<script>
+
+    var presentationUniqueId = 1387533966848;
+//    var url = "http://at.presenterevents.service.qbrick.com";
+ //   var type = "POST";
+//    var dataType = "json";
+//    var contentType = "application/json;charset=utf-8";
+
+    function init()
+    {
+        alert("init");
+
+        var clientHelper = new PresenterEvents.ClientHelper(presentationUniqueId);
+        clientHelper.init();
+
+
+        clientHelper.getNotifyObject().on("presenterEvents", function (e, paramObj)
+        {
+            if (paramObj.name === 'onReceivedNewEvents')
+            {
+                stateText.innerHTML = "onReceivedNewEvents";
+                console.log("/////////////////////////////////////////////////////");
+                console.log(paramObj.data[0].EventName);
+                console.log(paramObj.data[0].EventData);
+                console.log("/////////////////////////////////////////////////////");
+            } else if (paramObj.name === 'onConnectionStateChanged')
+            {
+                stateText.innerHTML = "onConnectionStateChanged";
+            } else if (paramObj.name === 'onError')
+            {
+                stateText.innerHTML = "onError";
+            }
+
+            //returnValue
+
+        });
+    }
+
+    /*
+     [Log] Object (simpleClient.html, line 83)
+     CreatedDate: "2013-12-22T10:28:13.2745234+01:00"
+     EventContainerID: 17
+     EventMetadatas: Array[0]
+     EventTime: 0
+     EventType: "HELLO EVENT"
+     Id: 119
+     UpdatedDate: "2013-12-22T10:28:13.2745234+01:00"
+     __proto__: Object
+
+     * */
+
+    /*function sendEvent()
+    {
+
+        stateText.innerHTML = "Sending Event ->";
+        var voute = false;
+
+        var serviceEvent = {
+            EventClass: "",
+            EventName: 'HELLO EVENT',
+            EventData: 'on',
+            EventTime: 0
+        };
+
+        var event = {
+            EventType: serviceEvent.EventName,
+            EventTime: serviceEvent.EventTime
+        };
+
+        delayTime = 0;
+
+        setTimeout(function () { callServiceWithDelay(event, voute, serviceEvent.EventData) }, delayTime * 1000);
+
+        function callServiceWithDelay(event, voute, eventData) {
+
+            console.log("EVENT ____   : " + JSON.stringify(event));
+
+            $.ajax({
+                type: type,
+                dataType: dataType,
+                url: url + '/api/EventContainer/' + presentationUniqueId + '/Event',
+                data: JSON.stringify(event),
+                contentType: contentType,
+                headers: { 'Authorization': 'CPK token="D3E42E7DC1DA48699E2F8F53A556F923"cid="2423B6CA"' },
+                success: function (data) {
+                    console.log(data);
+                    if (data.EventType === 'voting') {
+                        voutingEventId = data.Id;
+                        voute = true;
+                    }
+                    postEventMetadata(data.Id, eventData, voute);
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+        };
+
+        // post event metadata
+        function postEventMetadata(eventId, eventData, voute) {
+            var eventMetadata = {
+                EventID: eventId,
+                EventData: eventData,
+                EventCulture: 'en-us'
+            };
+
+            $.ajax({
+                type: type,
+                dataType: dataType,
+                url: url + '/api/EventContainer/' + presentationUniqueId + '/Event/' + eventId + '/EventMetadata',
+                data: JSON.stringify(eventMetadata),
+                contentType: contentType,
+                headers: { 'Authorization': 'CPK token="D3E42E7DC1DA48699E2F8F53A556F923"cid="2423B6CA"' },
+                success: function (data) {
+                    console.log(data);
+                    if (voute === true) {
+                        if (tt == null)
+                            tt = setInterval(function () { getVoutingResults() }, 3000);
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+        };
+    }
+    */
+</script>
+<body onload="init()">
+Hello
+<br>
+<input type="button" value="sendEvent" onclick="sendEvent()" />
+<br>
+<br>
+<div id="stateText"></div>
+<br>
+<br>
+<div id="returnValue"></div>
+
+
+</body>
+</html>
